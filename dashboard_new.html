@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <header>
+            <h1>Welcome to Your Dashboard</h1>
+            <nav>
+                <a href="/dashboard">Dashboard</a>
+                <a href="/profile">Profile</a>
+                <a href="/favorites">Favorites</a>
+                <a href="/map">Map</a>
+                <a href="/settings">Settings</a>
+                <a href="/logout">Logout</a>
+            </nav>
+        </header>
+        <main>
+            <section id="cars-section">
+                <h2>Available Cars</h2>
+                <div id="cars-container" class="cars-grid">
+                    <!-- Cars will be loaded here -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="js/cars.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>
