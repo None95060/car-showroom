@@ -1,5 +1,8 @@
-# TODO: Implement User Authentication with In-Memory Database
+# Database Integration Plan
 
-- [x] Add in-memory users array in server.js to store registered users (email, password)
-- [x] Add POST /signup route: Check if email exists; if not, add user and return success
-- [x] Add POST /login route: Check if email exists and password matches; if yes, return success; else, return error
+- [x] Install dependencies: mongoose, bcrypt
+- [x] Create models/User.js with User schema
+- [x] Update server.js: Add DB connection, import User model, update signup/login routes with async/await and password hashing
+- [x] Set up MongoDB (use MongoDB Atlas for cloud database)
+- [x] Test signup/login with DB persistence
+- [ ] Update README with DB setup instructions

@@ -44,16 +44,32 @@ To customize the background with your own image:
 
 ## Backend Setup
 
-This project now includes a simple Node.js backend server for handling form submissions.
+This project includes a Node.js backend server with MongoDB database integration for handling form submissions.
 
 ### Prerequisites
 
 - Node.js installed on your system.
+- MongoDB installed locally or a MongoDB Atlas account for cloud database.
 
 ### Installation
 
 1. Navigate to the project directory.
-2. Run `npm install` to install dependencies (Express, body-parser).
+2. Run `npm install` to install dependencies (Express, body-parser, mongoose, bcrypt).
+
+### Database Setup
+
+#### Option 1: Local MongoDB
+1. Install MongoDB Community Server from https://www.mongodb.com/try/download/community
+2. Start MongoDB service (usually `mongod` command)
+3. The app will connect to `mongodb://localhost:27017/company-portal` by default
+
+#### Option 2: MongoDB Atlas (Cloud)
+1. Create a free account at https://www.mongodb.com/atlas
+2. Create a new cluster and database
+3. Get your connection string from Atlas
+4. Set the `MONGODB_URI` environment variable:
+   - On Windows: `set MONGODB_URI=your_connection_string`
+   - On Linux/Mac: `export MONGODB_URI=your_connection_string`
 
 ### Running the Server
 
@@ -63,18 +79,17 @@ This project now includes a simple Node.js backend server for handling form subm
 
 ### How It Works
 
-- The server uses in-memory storage for users (for demo purposes; replace with a database for production).
-- Signup: Checks for password match and unique email, then stores the user.
-- Login: Verifies email and password against stored users, then redirects to the dashboard.
+- The server uses MongoDB for persistent user storage with password hashing.
+- Signup: Validates input, hashes password, and stores user in database.
+- Login: Verifies email and password against database records.
 - After successful signup, redirects to login page.
 - Dashboard: A simple internal page for logged-in users.
 
-### Next Steps
+### Security Features
 
-- Replace in-memory storage with a proper database (e.g., MongoDB, PostgreSQL).
-- Add session management and cookies for persistent login.
-- Implement password hashing (e.g., using bcrypt).
-- Add more routes and features as needed.
+- Passwords are hashed using bcrypt before storage
+- Input validation and sanitization
+- CORS enabled for cross-origin requests
 
 ## Next Steps
 
