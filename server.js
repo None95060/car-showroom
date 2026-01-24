@@ -3,15 +3,13 @@ const path = require('path');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 const User = require('./models/User');
 
 const app = express();
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/company-portal', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/company-portal')
 .then(() => console.log('MongoDB connected'))
 .catch(err => console.error('MongoDB connection error:', err));
 
@@ -35,23 +33,38 @@ app.get('/dashboard', (req, res) => {
 });
 
 // POST routes for authentication
-app.post('/signup', (req, res) => {
-    const { firstname, lastname, email, password } = req.body;
-    const existingUser = users.find(user => user.email === email);
-    if (existingUser) {
-        return res.status(400).send('User already exists');
+app.post('/signup', async (req, res) => {
+    try {
+        const { fullname, email, password } = req.body;
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).send('User already exists');
+        }
+        const newUser = new User({ fullname, email, password });
+        await newUser.save();
+        res.status(201).send('User registered successfully');
+    } catch (error) {
+        console.error('Signup error:', error);
+        res.status(500).send('Server error');
     }
-    users.push({ firstname, lastname, email, password });
-    res.status(201).send('User registered successfully');
 });
 
-app.post('/login', (req, res) => {
-    const { email, password } = req.body;
-    const user = users.find(user => user.email === email && user.password === password);
-    if (!user) {
-        return res.status(401).send('Invalid credentials');
+app.post('/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(401).send('Invalid credentials');
+        }
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(401).send('Invalid credentials');
+        }
+        res.status(200).send('Login successful');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server error');
     }
-    res.status(200).send('Login successful');
 });
 
 // API endpoint for cars

@@ -3,19 +3,33 @@ document.addEventListener('DOMContentLoaded', function() {
     const signinForm = document.getElementById('signinForm');
 
     if (signupForm) {
-        signupForm.addEventListener('submit', function(e) {
+        signupForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
+            const fullname = document.querySelector('input[name="fullname"]').value;
+            const email = document.querySelector('input[name="email"]').value;
+            const password = document.querySelector('input[name="password"]').value;
+            const confirmPassword = document.querySelector('input[name="confirmPassword"]').value;
 
-            if (name && email && password && confirmPassword) {
+            if (fullname && email && password && confirmPassword) {
                 if (password === confirmPassword) {
-                    // Simulate signup success
-                    alert('Signup successful!');
-                    localStorage.setItem('user', JSON.stringify({ name: name, email: email }));
-                    window.location.href = '/dashboard';
+                    try {
+                        const response = await fetch('/signup', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ fullname, email, password })
+                        });
+                        if (response.ok) {
+                            localStorage.setItem('user', JSON.stringify({ email: email }));
+                            window.location.href = '/dashboard';
+                        } else {
+                            const error = await response.text();
+                            alert('Signup failed: ' + error);
+                        }
+                    } catch (error) {
+                        alert('An error occurred: ' + error.message);
+                    }
                 } else {
                     alert('Passwords do not match!');
                 }
@@ -26,15 +40,31 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     if (signinForm) {
-        signinForm.addEventListener('submit', function(e) {
+        signinForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
             if (email && password) {
-                // Simulate signin success
-                localStorage.setItem('user', JSON.stringify({ name: 'User', email: email }));
-                window.location.href = '/dashboard';
+                try {
+                    const response = await fetch('/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ email, password })
+                    });
+                    if (response.ok) {
+                        const data = await response.text();
+                        localStorage.setItem('user', JSON.stringify({ email: email }));
+                        window.location.href = '/dashboard';
+                    } else {
+                        const error = await response.text();
+                        alert('Login failed: ' + error);
+                    }
+                } catch (error) {
+                    alert('An error occurred: ' + error.message);
+                }
             } else {
                 alert('Please fill in all fields!');
             }
