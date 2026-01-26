@@ -1,53 +1,49 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
+import CarCard from './CarCard';
 
-// Mock car data (replace with API call)
-const mockCars = [
-  { id: 1, make: 'Toyota', model: 'Camry', year: 2020, price: 3500000, condition: 'Excellent', image: 'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80' },
-  { id: 2, make: 'Honda', model: 'Civic', year: 2019, price: 2800000, condition: 'Good', image: 'https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80' },
-  { id: 4, make: 'BMW', model: 'X3', year: 2018, price: 7500000, condition: 'Used', image: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80' },
-  { id: 5, make: 'Audi', model: 'A4', year: 2022, price: 5500000, condition: 'New', image: 'https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80' },
-  { id: 6, make: 'Mercedes', model: 'C-Class', year: 2017, price: 6200000, condition: 'Good', image: 'images/mercedesbenzcclass.jpg' },
-  { id: 7, make: 'Tesla', model: 'Model 3', year: 2023, price: 5800000, condition: 'New', image: 'https://images.unsplash.com/photo-1560958089-b8a1929cea89?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80' },
-  { id: 8, make: 'Nissan', model: 'Altima', year: 2016, price: 2200000, condition: 'Used', image: 'https://images.unsplash.com/photo-1549399735-cef2e2c3f638?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80' },
-  { id: 9, make: 'Toyota', model: 'Vitz', year: 2018, price: 1800000, condition: 'Good', image: 'https://via.placeholder.com/300x200?text=Toyota+Vitz' },
-  { id: 10, make: 'Toyota', model: 'Probox', year: 2019, price: 2200000, condition: 'Excellent', image: 'images/toyotaprobox.jpg' },
-  { id: 11, make: 'Toyota', model: 'RAV4', year: 2020, price: 4500000, condition: 'New', image: 'https://via.placeholder.com/300x200?text=Toyota+RAV4' },
-  { id: 12, make: 'Toyota', model: 'Corolla', year: 2017, price: 2500000, condition: 'Used', image: 'images/toyotacorolla.jpg' },
-  { id: 13, make: 'Toyota', model: 'Prius', year: 2021, price: 3800000, condition: 'New', image: 'https://via.placeholder.com/300x200?text=Toyota+Prius' },
-  { id: 14, make: 'Honda', model: 'Accord', year: 2019, price: 3200000, condition: 'Good', image: 'https://via.placeholder.com/300x200?text=Honda+Accord' },
-  { id: 15, make: 'Nissan', model: 'Sentra', year: 2018, price: 2000000, condition: 'Used', image: 'https://via.placeholder.com/300x200?text=Nissan+Sentra' },
-  { id: 16, make: 'Toyota', model: 'Passo', year: 2020, price: 750000, condition: 'Good', image: 'images/toyotapasso.jpg' },
-  { id: 17, make: 'Nissan', model: 'Juke', year: 2019, price: 1250000, condition: 'Excellent', image: 'images/nissanjuke.jpg' },
-  { id: 18, make: 'Suzuki', model: 'Swift', year: 2018, price: 850000, condition: 'Good', image: 'images/suzukiswift.jpg' },
-  { id: 19, make: 'Hyundai', model: 'i10', year: 2021, price: 800000, condition: 'New', image: 'images/hyundaii10.jpg' },
-  { id: 20, make: 'Nissan', model: 'Sylphy', year: 2019, price: 1400000, condition: 'Good', image: 'images/nissansylphy.jpg' },
-  { id: 21, make: 'Toyota', model: 'Wish', year: 2018, price: 1300000, condition: 'Used', image: 'https://images.unsplash.com/photo-1549399735-cef2e2c3f638?w=400&h=300&fit=crop' },
-  { id: 22, make: 'Honda', model: 'Fit', year: 2020, price: 1550000, condition: 'Excellent', image: 'images/hondafit.jpg' },
-  { id: 23, make: 'Mazda', model: 'Mazda3', year: 2021, price: 2500000, condition: 'New', image: 'images/mazdamazda3.jpg' },
-  { id: 24, make: 'Hyundai', model: 'Elantra', year: 2019, price: 2100000, condition: 'Good', image: 'images/hyundaielantra.jpg' },
-  { id: 25, make: 'Kia', model: 'Cerato', year: 2020, price: 1900000, condition: 'Excellent', image: 'images/kiacerato.jpg' },
-  { id: 26, make: 'Toyota', model: 'Harrier', year: 2022, price: 5500000, condition: 'New', image: 'images/toyotaharrier.jpg' },
-  { id: 27, make: 'Subaru', model: 'Forester', year: 2021, price: 4200000, condition: 'New', image: 'images/subaruforester.jpg' },
-  { id: 28, make: 'Mazda', model: 'CX-5', year: 2020, price: 3800000, condition: 'Good', image: 'images/mazdacx5.jpg' },
-  { id: 29, make: 'Nissan', model: 'X-Trail', year: 2019, price: 3300000, condition: 'Used', image: 'images/nissanxtrail.jpg' },
-  { id: 30, make: 'Volkswagen', model: 'Tiguan', year: 2021, price: 3600000, condition: 'Excellent', image: 'images/volkswagentiguan.jpg' },
-  { id: 31, make: 'Toyota', model: 'Hilux', year: 2018, price: 3500000, condition: 'Used', image: 'images/toyotahilux.jpg' },
-  { id: 32, make: 'Isuzu', model: 'D-MAX', year: 2020, price: 4500000, condition: 'Good', image: 'images/isuzudmax.jpg' },
-  { id: 33, make: 'Mitsubishi', model: 'L200', year: 2019, price: 3200000, condition: 'Used', image: 'images/mitsubishil200.jpg' },
-  { id: 34, make: 'Mercedes-Benz', model: 'C-Class', year: 2022, price: 9000000, condition: 'New', image: 'images/mercedesbenzcclass.jpg' },
-  { id: 35, make: 'BMW', model: '3 Series', year: 2021, price: 10000000, condition: 'New', image: 'images/bmw3series.jpg' },
-  { id: 36, make: 'Lexus', model: 'RX', year: 2020, price: 11000000, condition: 'Good', image: 'images/lexusrx.jpg' },
-  { id: 37, make: 'Volvo', model: 'XC60', year: 2022, price: 8000000, condition: 'New', image: 'images/volvoxc60.jpg' },
-  { id: 38, make: 'Audi', model: 'Q5', year: 2021, price: 9500000, condition: 'Excellent', image: 'images/audiq5.jpg' },
-  { id: 39, make: 'Subaru', model: 'Outback', year: 2020, price: 4800000, condition: 'Good', image: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=400&h=300&fit=crop' },
-  { id: 40, make: 'Subaru', model: 'XV', year: 2021, price: 3500000, condition: 'New', image: 'https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=400&h=300&fit=crop' },
-  { id: 41, make: 'Subaru', model: 'Legacy', year: 2019, price: 2800000, condition: 'Used', image: 'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=400&h=300&fit=crop' },
-  { id: 42, make: 'Scania', model: 'R500', year: 2018, price: 15000000, condition: 'Used', image: 'https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=400&h=300&fit=crop' },
-  { id: 43, make: 'Volvo', model: 'FH16', year: 2020, price: 18000000, condition: 'Good', image: 'https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=400&h=300&fit=crop' },
-  { id: 44, make: 'MAN', model: 'TGX', year: 2019, price: 14000000, condition: 'Used', image: 'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=400&h=300&fit=crop' },
-  { id: 45, make: 'Mercedes-Benz', model: 'Actros', year: 2021, price: 20000000, condition: 'New', image: 'images/mercedesbenzgle.jpg' },
-];
+// Import Kenyan car data
+import { kenyanCars } from './kenyan_cars.js';
+
+// Transform Kenyan car data to match expected structure
+const transformKenyanCars = () => {
+  const transformedCars = [];
+  let id = 1;
+
+  Object.keys(kenyanCars).forEach(category => {
+    kenyanCars[category].forEach(car => {
+      // Parse price range to get average price
+      const priceRange = car.typical_price_range;
+      const minPrice = parseInt(priceRange.split(' - ')[0].replace('KSh ', '').replace(/,/g, ''));
+      const maxPrice = parseInt(priceRange.split(' - ')[1].replace('KSh ', '').replace(/,/g, ''));
+      const avgPrice = Math.floor((minPrice + maxPrice) / 2);
+
+      // Generate random year between 2016-2023
+      const year = Math.floor(Math.random() * (2023 - 2016 + 1)) + 2016;
+
+      // Assign condition based on year
+      let condition = 'Used';
+      if (year >= 2022) condition = 'New';
+      else if (year >= 2020) condition = 'Excellent';
+      else if (year >= 2018) condition = 'Good';
+
+      transformedCars.push({
+        id: id++,
+        make: car.brand,
+        model: car.model,
+        year: year,
+        price: avgPrice,
+        condition: condition,
+        image: car.image,
+        category: category
+      });
+    });
+  });
+
+  return transformedCars;
+};
+
+const kenyanCarsData = transformKenyanCars();
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -57,8 +53,12 @@ const Dashboard = () => {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [conditionFilter, setConditionFilter] = useState('All');
+  const [categoryFilter, setCategoryFilter] = useState('All');
+  const [brandFilter, setBrandFilter] = useState('All');
   const [priceRange, setPriceRange] = useState([0, 25000000]);
   const [sortBy, setSortBy] = useState('price-low');
+  const [compareList, setCompareList] = useState([]);
+  const [showCompare, setShowCompare] = useState(false);
 
   // Fetch cars data
   useEffect(() => {
@@ -75,9 +75,9 @@ const Dashboard = () => {
         setLoading(false);
       } catch (err) {
         console.error('Error fetching cars:', err);
-        // Fallback to mock data if API fails
-        setCars(mockCars);
-        setFilteredCars(mockCars);
+        // Fallback to Kenyan car data if API fails
+        setCars(kenyanCarsData);
+        setFilteredCars(kenyanCarsData);
         setLoading(false);
       }
     };
@@ -92,9 +92,11 @@ const Dashboard = () => {
                            car.model.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            car.year.toString().includes(searchTerm);
       const matchesCondition = conditionFilter === 'All' || car.condition === conditionFilter;
+      const matchesCategory = categoryFilter === 'All' || car.category === categoryFilter;
+      const matchesBrand = brandFilter === 'All' || car.make === brandFilter;
       const matchesPrice = car.price >= priceRange[0] && car.price <= priceRange[1];
 
-      return matchesSearch && matchesCondition && matchesPrice;
+      return matchesSearch && matchesCondition && matchesCategory && matchesBrand && matchesPrice;
     });
 
     // Sort
@@ -112,7 +114,7 @@ const Dashboard = () => {
     });
 
     setFilteredCars(filtered);
-  }, [cars, searchTerm, conditionFilter, priceRange, sortBy]);
+  }, [cars, searchTerm, conditionFilter, categoryFilter, brandFilter, priceRange, sortBy]);
 
   const handlePriceRangeChange = (e, index) => {
     const newRange = [...priceRange];
@@ -157,7 +159,7 @@ const Dashboard = () => {
 
       {/* Filters */}
       <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
           {/* Search */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -187,6 +189,56 @@ const Dashboard = () => {
               <option value="Used">Used</option>
               <option value="Excellent">Excellent</option>
               <option value="Good">Good</option>
+            </select>
+          </div>
+
+          {/* Category Filter */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Category
+            </label>
+            <select
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="All">All Categories</option>
+              <option value="Hatchbacks">Hatchbacks</option>
+              <option value="Sedans">Sedans</option>
+              <option value="SUVs">SUVs</option>
+              <option value="Pickups">Pickups</option>
+              <option value="Luxury">Luxury</option>
+            </select>
+          </div>
+
+          {/* Brand Filter */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Brand
+            </label>
+            <select
+              value={brandFilter}
+              onChange={(e) => setBrandFilter(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="All">All Brands</option>
+              <option value="Toyota">Toyota</option>
+              <option value="Honda">Honda</option>
+              <option value="Nissan">Nissan</option>
+              <option value="BMW">BMW</option>
+              <option value="Mercedes-Benz">Mercedes-Benz</option>
+              <option value="Audi">Audi</option>
+              <option value="Volkswagen">Volkswagen</option>
+              <option value="Subaru">Subaru</option>
+              <option value="Mazda">Mazda</option>
+              <option value="Kia">Kia</option>
+              <option value="Hyundai">Hyundai</option>
+              <option value="Suzuki">Suzuki</option>
+              <option value="Isuzu">Isuzu</option>
+              <option value="Mitsubishi">Mitsubishi</option>
+              <option value="Lexus">Lexus</option>
+              <option value="Land Rover">Land Rover</option>
+              <option value="Volvo">Volvo</option>
             </select>
           </div>
 
@@ -246,76 +298,57 @@ const Dashboard = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredCars.map(car => (
-            <CarCard key={car.id} car={car} />
+            <CarCard
+              key={car.id}
+              car={car}
+            />
           ))}
+        </div>
+      )}
+
+      {/* Compare Modal */}
+      {showCompare && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-6xl w-full mx-4 max-h-96 overflow-y-auto">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold">Compare Cars</h2>
+              <button
+                onClick={() => setShowCompare(false)}
+                className="text-gray-500 hover:text-gray-700 text-2xl"
+              >
+                &times;
+              </button>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {compareList.map(car => (
+                <div key={car.id} className="border rounded-lg p-4">
+                  <img
+                    src={car.image}
+                    alt={`${car.make} ${car.model}`}
+                    className="w-full h-32 object-cover rounded mb-4"
+                    onError={(e) => e.target.src = 'https://via.placeholder.com/300x200?text=No+Image'}
+                  />
+                  <h3 className="font-bold text-lg mb-2">{car.make} {car.model}</h3>
+                  <p className="text-gray-600 mb-1">Year: {car.year}</p>
+                  <p className="text-gray-600 mb-1">Category: {car.category}</p>
+                  <p className="text-gray-600 mb-1">Condition: {car.condition}</p>
+                  <p className="text-2xl font-bold text-green-600 mb-4">KSH {car.price.toLocaleString()}</p>
+                  <button
+                    onClick={() => setCompareList(compareList.filter(c => c.id !== car.id))}
+                    className="w-full bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       )}
     </div>
   );
 };
 
-// Car Card Component
-const CarCard = ({ car }) => {
-  const [isFavorited, setIsFavorited] = useState(false);
 
-  const toggleFavorite = () => {
-    setIsFavorited(!isFavorited);
-  };
-
-  return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
-      <div className="relative">
-        <img
-          src={car.image}
-          alt={`${car.make} ${car.model}`}
-          className="w-full h-48 object-cover"
-          onError={(e) => {
-            e.target.src = 'https://via.placeholder.com/300x200?text=No+Image';
-          }}
-        />
-        <button
-          onClick={toggleFavorite}
-          className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-md hover:bg-gray-100 transition-colors"
-        >
-          <svg
-            className={`w-5 h-5 ${isFavorited ? 'text-red-500 fill-current' : 'text-gray-400'}`}
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-            />
-          </svg>
-        </button>
-      </div>
-      <div className="p-4">
-        <h3 className="text-lg font-semibold text-gray-900 mb-1">
-          {car.make} {car.model}
-        </h3>
-        <p className="text-gray-600 text-sm mb-2">Year: {car.year}</p>
-        <div className="flex justify-between items-center mb-3">
-          <span className="text-2xl font-bold text-green-600">
-            KSH {car.price.toLocaleString()}
-          </span>
-          <span
-            className={`px-2 py-1 rounded-full text-xs font-medium ${
-              car.condition === 'New'
-                ? 'bg-green-100 text-green-800'
-                : 'bg-yellow-100 text-yellow-800'
-            }`}
-          >
-            {car.condition}
-          </span>
-        </div>
-        <button className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors font-medium">
-          View Details
-        </button>
-      </div>
-    </div>
-  );
-};
 
 export default Dashboard;

@@ -6,9 +6,22 @@ const Favorites = () => {
   const [cars, setCars] = useState([]);
 
   useEffect(() => {
-    // Load favorites from localStorage
-    const savedFavorites = JSON.parse(localStorage.getItem('favorites') || '[]');
-    setFavorites(savedFavorites);
+    const loadFavorites = () => {
+      const savedFavorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+      setFavorites(savedFavorites);
+    };
+
+    // Load favorites initially
+    loadFavorites();
+
+    // Listen for localStorage changes
+    const handleStorageChange = (e) => {
+      if (e.key === 'favorites') {
+        loadFavorites();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
 
     // Fetch all cars
     fetch('/api/cars')
@@ -24,6 +37,10 @@ const Favorites = () => {
         // Fallback to empty array or mock data if needed
         setCars([]);
       });
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, []);
 
   const favoriteCars = cars.filter(car => favorites.includes(car.id));

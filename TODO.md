@@ -1,19 +1,20 @@
-# Authentication Fixes Completed
+lets te# Car App Improvements Implementation Plan
 
-## Issues Fixed:
-- [x] Signup page not functioning: Updated form fields to match server expectations (firstname, lastname instead of name)
-- [x] Login accepting anyone: Replaced simulation with actual API calls to server for authentication
-- [x] Removed duplicate password hashing in server.js (User model already handles it)
+## Current Tasks
+- [ ] Integrate Real Car Data: Replace mock data in Dashboard.js with structured Kenyan car data from kenyan_cars.js
+- [ ] Enhance Filtering: Add category filters (Hatchbacks, SUVs, etc.) and brand filters based on Kenyan data
+- [ ] Add Car Comparison Feature: Implement compare button on car cards to select and compare up to 3 cars side-by-side
 
-## Changes Made:
-- **signup.html**: Changed "Full Name" input to separate "First Name" and "Last Name" fields
-- **js/main.js**: 
-  - Signup form now makes POST request to /signup endpoint
-  - Login form now makes POST request to /login endpoint
-  - Both handle server responses properly
-- **server.js**: Removed manual bcrypt.hash in signup route (handled by User model pre-save hook)
+## Information Gathered
+- Dashboard.js uses mock cars array with properties: id, make, model, year, price, condition, image
+- kenyan_cars.js has categorized data with: brand, model, typical_price_range, image
+- Need to transform Kenyan data to match mock structure and add category property
+- CarCard.jsx already has favorites functionality
+- App structure supports React routing and auth
 
-## Testing:
-- Signup should now create users in database
-- Login should only work for registered users with correct credentials
-- Passwords are properly hashed and compared
+## Followup Steps
+- Transform Kenyan car data to include id, year, condition, and parse price ranges
+- Update Dashboard.js to import and use transformed data
+- Add category and brand filter dropdowns
+- Implement comparison state and modal component
+- Test dashboard with new filters and comparison feature

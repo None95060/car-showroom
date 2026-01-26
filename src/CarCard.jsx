@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const CarCard = ({ car }) => {
+  const navigate = useNavigate();
   const [isFavorited, setIsFavorited] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [imageError, setImageError] = useState(false);
@@ -134,6 +136,12 @@ const CarCard = ({ car }) => {
                 className={`px-4 py-2 rounded-md transition-all duration-300 ${isFavorited ? 'bg-red-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
               >
                 {isFavorited ? '❤️ Favorited' : '🤍 Favorite'}
+              </button>
+              <button
+                onClick={() => navigate(`/car/${car.id}`)}
+                className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+              >
+                View Details
               </button>
               <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
                 Contact Seller

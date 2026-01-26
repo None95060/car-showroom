@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { kenyanCars } from './kenyan_cars.js';
 
 const CarDetails = () => {
   const { id } = useParams();
@@ -26,6 +27,22 @@ const CarDetails = () => {
             'https://via.placeholder.com/800x600?text=Engine',
             'https://via.placeholder.com/800x600?text=Details'
           ];
+
+          // Find detailed specs from kenyan_cars data
+          let detailedSpecs = null;
+          Object.keys(kenyanCars).forEach(category => {
+            const carInCategory = kenyanCars[category].find(c =>
+              c.brand === foundCar.make && c.model === foundCar.model
+            );
+            if (carInCategory) {
+              detailedSpecs = carInCategory;
+            }
+          });
+
+          if (detailedSpecs) {
+            foundCar.detailedSpecs = detailedSpecs;
+          }
+
           setCar(foundCar);
         }
         setLoading(false);
@@ -123,6 +140,99 @@ const CarDetails = () => {
             <h2 className="text-2xl font-semibold mb-2">Description</h2>
             <p className="text-gray-700">{car.description}</p>
           </div>
+
+          {/* Detailed Specifications */}
+          {car.detailedSpecs && (
+            <div>
+              <h2 className="text-2xl font-semibold mb-4">Detailed Specifications</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Mileage</label>
+                    <p className="text-gray-900">{car.detailedSpecs.mileage}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Fuel Consumption</label>
+                    <p className="text-gray-900">{car.detailedSpecs.fuel_consumption}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Engine</label>
+                    <p className="text-gray-900">{car.detailedSpecs.engine}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Horsepower</label>
+                    <p className="text-gray-900">{car.detailedSpecs.horsepower}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Transmission</label>
+                    <p className="text-gray-900">{car.detailedSpecs.transmission}</p>
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Drivetrain</label>
+                    <p className="text-gray-900">{car.detailedSpecs.drivetrain}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Fuel Type</label>
+                    <p className="text-gray-900">{car.detailedSpecs.fuel_type}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Seating Capacity</label>
+                    <p className="text-gray-900">{car.detailedSpecs.seating_capacity}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Cargo Space</label>
+                    <p className="text-gray-900">{car.detailedSpecs.cargo_space}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Warranty</label>
+                    <p className="text-gray-900">{car.detailedSpecs.warranty}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Performance & Safety */}
+              <div className="mt-6 space-y-4">
+                {car.detailedSpecs.acceleration && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Acceleration (0-100 km/h)</label>
+                    <p className="text-gray-900">{car.detailedSpecs.acceleration}</p>
+                  </div>
+                )}
+                {car.detailedSpecs.top_speed && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Top Speed</label>
+                    <p className="text-gray-900">{car.detailedSpecs.top_speed}</p>
+                  </div>
+                )}
+                {car.detailedSpecs.ground_clearance && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Ground Clearance</label>
+                    <p className="text-gray-900">{car.detailedSpecs.ground_clearance}</p>
+                  </div>
+                )}
+                {car.detailedSpecs.towing_capacity && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Towing Capacity</label>
+                    <p className="text-gray-900">{car.detailedSpecs.towing_capacity}</p>
+                  </div>
+                )}
+                {car.detailedSpecs.safety_features && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Safety Features</label>
+                    <div className="flex flex-wrap gap-2 mt-1">
+                      {car.detailedSpecs.safety_features.map((feature, index) => (
+                        <span key={index} className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">
+                          {feature}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Dealer Information */}
           <div>
