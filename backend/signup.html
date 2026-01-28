@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Sign Up</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script defer src="js/main.js"></script>
+</head>
+<body>
+  <main class="page-center">
+    <div class="card form-card">
+      <h2 class="form-title">Create Account</h2>
+      <form id="signupForm" class="form" action="#">
+        <input class="input" type="text" name="firstname" placeholder="First Name" required>
+        <input class="input" type="text" name="lastname" placeholder="Last Name" required>
+        <input class="input" type="email" name="email" placeholder="Email" required>
+        <input class="input" type="password" name="password" placeholder="Password" required>
+        <input class="input" type="password" name="confirmPassword" placeholder="Confirm Password" required>
+        <button class="btn btn-primary" type="submit">Sign up</button>
+      </form>
+      <p class="muted">Already have an account? <a href="/login">Login</a></p>
+      <a class="link-back" href="/">Back</a>
+    </div>
+  </main>
+</body>
+</html>

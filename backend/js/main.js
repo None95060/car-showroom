@@ -5,12 +5,13 @@ document.addEventListener('DOMContentLoaded', function() {
     if (signupForm) {
         signupForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-            const fullname = document.querySelector('input[name="fullname"]').value;
+            const firstname = document.querySelector('input[name="firstname"]').value;
+            const lastname = document.querySelector('input[name="lastname"]').value;
             const email = document.querySelector('input[name="email"]').value;
             const password = document.querySelector('input[name="password"]').value;
             const confirmPassword = document.querySelector('input[name="confirmPassword"]').value;
 
-            if (fullname && email && password && confirmPassword) {
+            if (firstname && lastname && email && password && confirmPassword) {
                 if (password === confirmPassword) {
                     try {
                         const response = await fetch('/signup', {
@@ -18,11 +19,13 @@ document.addEventListener('DOMContentLoaded', function() {
                             headers: {
                                 'Content-Type': 'application/json'
                             },
-                            body: JSON.stringify({ fullname, email, password })
+                            body: JSON.stringify({ firstname, lastname, email, password })
                         });
                         if (response.ok) {
-                            localStorage.setItem('user', JSON.stringify({ email: email }));
-                            window.location.href = '/dashboard';
+                            const message = await response.text();
+                            alert(message);
+                            localStorage.setItem('user', JSON.stringify({ email: email, firstname: firstname, lastname: lastname }));
+                            window.location.href = '/login';
                         } else {
                             const error = await response.text();
                             alert('Signup failed: ' + error);
@@ -55,8 +58,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         body: JSON.stringify({ email, password })
                     });
                     if (response.ok) {
-                        const data = await response.text();
-                        localStorage.setItem('user', JSON.stringify({ email: email }));
+                        const data = await response.json();
+                        localStorage.setItem('user', JSON.stringify({ email: data.user.email, fullname: data.user.fullname }));
+                        alert('Login successful!');
                         window.location.href = '/dashboard';
                     } else {
                         const error = await response.text();
